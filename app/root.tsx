@@ -16,7 +16,7 @@ import appStylesHref from "./app.css";
 import { createEmptyContact, getContacts } from "./data";
 import { useEffect, useState } from "react";
 
-export const loader = async ({request}: LoaderFunctionArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   const q = url.searchParams.get('q')
   const contacts = await getContacts(q)
@@ -35,6 +35,11 @@ export default function App() {
   const navigation = useNavigation()
   const [query, setQuery] = useState(q || "");
   const submit = useSubmit();
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has(
+      "q"
+    );
 
   useEffect(() => {
     setQuery(q || "");
@@ -52,12 +57,15 @@ export default function App() {
         <div id="sidebar">
           <h1>Remix Contacts</h1>
           <div>
-            <Form 
-            id="search-form" 
-            role="search"
-            onChange={(event) =>
-              submit(event.currentTarget)
-            }
+            <Form
+              id="search-form"
+              role="search"
+              onChange={(event) => {
+                const isFirstSearch = q === null;
+                submit(event.currentTarget, {
+                  replace: !isFirstSearch,
+                });
+              }}
             >
               <input
                 id="q"
@@ -69,8 +77,13 @@ export default function App() {
                 onChange={(event) =>
                   setQuery(event.currentTarget.value)
                 }
+                className={searching ? "loading" : ""}
               />
-              <div id="search-spinner" aria-hidden hidden={true} />
+              <div
+                id="search-spinner"
+                aria-hidden
+                hidden={!searching}
+              />
             </Form>
             <Form method="post">
               <button type="submit">New</button>
@@ -113,10 +126,12 @@ export default function App() {
           </nav>
         </div>
         <div
-        className={
-          navigation.state === "loading" ? "loading" : ""
-        }
-        id="detail"
+          className={
+            navigation.state === "loading" && !searching
+              ? "loading"
+              : ""
+          }
+          id="detail"
         >
           <Outlet />
         </div>
