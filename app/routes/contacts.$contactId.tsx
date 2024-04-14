@@ -6,7 +6,7 @@ export default function Contact() {
   const contact = {
     first: "Your",
     last: "Name",
-    avatar: "https://placekitten.com/g/200/200",
+    avatar: "https://image.lexica.art/full_jpg/7515495b-982d-44d2-9931-5a8bbbf27532",
     twitter: "your_handle",
     notes: "Some notes",
     favorite: true,
