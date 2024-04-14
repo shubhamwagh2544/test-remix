@@ -1,16 +1,26 @@
-import { Form } from "@remix-run/react";
+import { Form, useLoaderData } from "@remix-run/react";
 import type { FunctionComponent } from "react";
-import type { ContactRecord } from "../data";
+import { getContact, type ContactRecord } from "../data";
+import { LoaderFunction, json } from "@remix-run/node";
+
+export const loader = async ({params}) => {
+    const contactId = params.contactId
+    const contact = await getContact(contactId)
+    return json({ contact });
+}
 
 export default function Contact() {
-  const contact = {
-    first: "Your",
-    last: "Name",
-    avatar: "https://image.lexica.art/full_jpg/7515495b-982d-44d2-9931-5a8bbbf27532",
-    twitter: "your_handle",
-    notes: "Some notes",
-    favorite: true,
-  };
+
+const { contact } = useLoaderData<typeof loader>();
+
+//   const contact = {
+//     first: "Your",
+//     last: "Name",
+//     avatar: "https://image.lexica.art/full_jpg/7515495b-982d-44d2-9931-5a8bbbf27532",
+//     twitter: "your_handle",
+//     notes: "Some notes",
+//     favorite: true,
+//   };
 
   return (
     <div id="contact">

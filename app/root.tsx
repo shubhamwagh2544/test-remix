@@ -1,4 +1,4 @@
-import { LinksFunction, json } from "@remix-run/node";
+import { LinksFunction, LoaderFunction, json } from "@remix-run/node";
 import {
   Form,
   Link,
@@ -19,7 +19,7 @@ export const loader = async () => {
 
 export default function App() {
 
-  const {contacts} = useLoaderData()
+  const {contacts} = useLoaderData<typeof loader>()
 
   return (
     <html lang="en">
